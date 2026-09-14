@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rituraj Giri — Graphic Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0d0d;
+    --paper:#efe9df;
+    --paper-line:#d8d0bf;
+    --red:#d6221b;
+    --gold:#a68a3f;
+    --steel:#4a4f57;
+    --white:#f5f3ee;
+    --dim:#8b8781;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--white);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--red); color:var(--white); }
+
+  h1,h2,h3,.display{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    letter-spacing:0.01em;
+    line-height:0.92;
+    text-transform:uppercase;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding-left:96px;
+    padding-right:48px;
+  }
+  @media(max-width:900px){
+    .wrap{ padding-left:56px; padding-right:24px; }
+  }
+  @media(max-width:600px){
+    .wrap{ padding-left:20px; padding-right:20px; }
+  }
+
+  /* ---------- barcode rail ---------- */
+  .rail{
+    position:fixed;
+    left:0; top:0; bottom:0;
+    width:64px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:space-between;
+    padding:28px 0;
+    z-index:50;
+    background:linear-gradient(180deg, rgba(13,13,13,0.0), rgba(13,13,13,0.0));
+    pointer-events:none;
+  }
+  @media(max-width:600px){ .rail{ width:0; } }
+  .rail-mark{
+    writing-mode:vertical-rl;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.28em;
+    color:var(--dim);
+    pointer-events:auto;
+  }
+  .rail-barcode{
+    width:22px;
+    height:180px;
+    background:repeating-linear-gradient(90deg, var(--white) 0px, var(--white) 1px, transparent 1px, transparent 3px, var(--white) 3px, var(--white) 4px, transparent 4px, transparent 6px);
+    opacity:0.85;
+  }
+  .rail-serial{
+    writing-mode:vertical-rl;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.15em;
+    color:var(--dim);
+  }
+
+  /* ---------- top nav ---------- */
+  header.nav{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:60;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:22px 48px 22px 96px;
+    mix-blend-mode:difference;
+  }
+  @media(max-width:900px){ header.nav{ padding:18px 24px 18px 56px; } }
+  @media(max-width:600px){ header.nav{ padding:16px 20px; } }
+  header.nav .mark{
+    font-family:'Anton', sans-serif;
+    font-size:20px;
+    letter-spacing:0.03em;
+    color:var(--white);
+  }
+  header.nav nav{ display:flex; gap:28px; }
+  header.nav nav a{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:var(--white);
+    text-transform:uppercase;
+  }
+  @media(max-width:600px){ header.nav nav{ gap:16px; } header.nav nav a{ font-size:10px; } }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100svh;
+    position:relative;
+    display:flex;
+    align-items:center;
+    padding-top:90px;
+    padding-bottom:60px;
+    background:
+      radial-gradient(ellipse 900px 500px at 78% 20%, rgba(214,34,27,0.16), transparent 60%),
+      var(--ink);
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:40px;
+    align-items:center;
+    width:100%;
+  }
+  @media(max-width:900px){ .hero-grid{ grid-template-columns:1fr; } }
+
+  .hero-eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    color:var(--red);
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(58px, 9vw, 132px);
+    color:var(--white);
+  }
+  .hero h1 span{ color:var(--red); }
+  .hero-role{
+    margin-top:22px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    letter-spacing:0.05em;
+    color:var(--dim);
+    max-width:36ch;
+  }
+  .hero-desc{
+    margin-top:26px;
+    font-size:17px;
+    color:#cfcac0;
+    max-width:46ch;
+  }
+  .hero-cta{
+    margin-top:38px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 22px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    border:1px solid var(--white);
+  }
+  .btn.primary{ background:var(--red); border-color:var(--red); color:var(--white); }
+  .btn.primary:hover{ background:#b81c15; }
+  .btn.ghost:hover{ background:var(--white); color:var(--ink); }
+
+  .hero-photo{
+    position:relative;
+    display:flex;
+    justify-content:center;
+  }
+  .photo-frame{
+    position:relative;
+    width:100%;
+    max-width:360px;
+    transform:rotate(-4deg);
+  }
+  .photo-frame img{
+    width:100%;
+    display:block;
+    filter:grayscale(0.15) contrast(1.05);
+    border:2px solid var(--white);
+  }
+  .photo-tag{
+    position:absolute;
+    bottom:-18px;
+    left:-18px;
+    background:var(--red);
+    color:var(--white);
+    font-family:'Anton', sans-serif;
+    font-size:15px;
+    padding:8px 14px;
+    transform:rotate(-4deg);
+    letter-spacing:0.02em;
+  }
+  .photo-barcode{
+    position:absolute;
+    top:-16px;
+    right:-16px;
+    width:64px;
+    height:22px;
+    background:repeating-linear-gradient(90deg, var(--ink) 0px, var(--ink) 1px, transparent 1px, transparent 3px, var(--ink) 3px, var(--ink) 4px, transparent 4px, transparent 6px);
+    background-color:var(--white);
+    transform:rotate(-4deg);
+  }
+
+  .scroll-cue{
+    position:absolute;
+    bottom:32px;
+    left:96px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.15em;
+    color:var(--dim);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  @media(max-width:900px){ .scroll-cue{ left:56px; } }
+  @media(max-width:600px){ .scroll-cue{ left:20px; bottom:20px; } }
+  .scroll-cue .line{ width:34px; height:1px; background:var(--dim); }
+
+  /* ---------- section label (poster serial) ---------- */
+  .section-tag{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:44px;
+  }
+  .section-tag .num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--red);
+    letter-spacing:0.08em;
+  }
+  .section-tag .rule{ flex:1; height:1px; background:currentColor; opacity:0.25; }
+  .section-tag h2{ font-size:clamp(30px,4vw,46px); }
+
+  /* ---------- about (paper section) ---------- */
+  .paper{
+    background:var(--paper);
+    color:var(--ink);
+    position:relative;
+  }
+  .paper .section-tag .rule{ background:var(--ink); }
+  .about{ padding:120px 0 100px; }
+  .about-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:60px;
+  }
+  @media(max-width:900px){ .about-grid{ grid-template-columns:1fr; gap:36px; } }
+  .about-lead{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(26px,3vw,36px);
+    text-transform:none;
+    line-height:1.15;
+    color:var(--ink);
+  }
+  .about-body p{
+    font-size:16.5px;
+    color:#33312c;
+    max-width:56ch;
+    margin-bottom:18px;
+  }
+  .about-body p:last-child{ margin-bottom:0; }
+
+  .facts{
+    margin-top:44px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1px;
+    background:var(--paper-line);
+    border:1px solid var(--paper-line);
+  }
+  @media(max-width:500px){ .facts{ grid-template-columns:1fr; } }
+  .fact{
+    background:var(--paper);
+    padding:22px 24px;
+  }
+  .fact .k{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:6px;
+  }
+  .fact .v{ font-size:15.5px; color:var(--ink); font-weight:600; }
+
+  /* ---------- work ---------- */
+  .work{ padding:120px 0 60px; }
+  .work-intro{ max-width:56ch; color:#cfcac0; margin-bottom:64px; font-size:16.5px; }
+  .work-list{ display:flex; flex-direction:column; gap:110px; }
+  .piece{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:52px;
+    align-items:center;
+  }
+  .piece.rev{ direction:rtl; }
+  .piece.rev > *{ direction:ltr; }
+  @media(max-width:800px){
+    .piece, .piece.rev{ grid-template-columns:1fr; direction:ltr; }
+  }
+  .piece-media{
+    position:relative;
+  }
+  .piece-media img{
+    width:100%;
+    display:block;
+    border:1px solid #2a2a2a;
+  }
+  .piece-serial{
+    position:absolute;
+    top:14px;
+    left:14px;
+    background:var(--ink);
+    border:1px solid var(--white);
+    color:var(--white);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    padding:5px 9px;
+  }
+  .piece-index{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--red);
+    letter-spacing:0.1em;
+    margin-bottom:10px;
+  }
+  .piece h3{
+    font-size:clamp(30px,3.6vw,46px);
+    color:var(--white);
+    margin-bottom:16px;
+  }
+  .piece p{
+    color:#c7c2b8;
+    font-size:15.5px;
+    max-width:44ch;
+    margin-bottom:18px;
+  }
+  .piece-tags{ display:flex; gap:10px; flex-wrap:wrap; }
+  .piece-tags span{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--dim);
+    border:1px solid #333;
+    padding:6px 10px;
+  }
+
+  /* ---------- skills ---------- */
+  .skills{ padding:120px 0; }
+  .skills-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border-top:1px solid #2a2a2a;
+    border-left:1px solid #2a2a2a;
+  }
+  @media(max-width:800px){ .skills-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:480px){ .skills-grid{ grid-template-columns:1fr; } }
+  .skill-cell{
+    border-right:1px solid #2a2a2a;
+    border-bottom:1px solid #2a2a2a;
+    padding:34px 22px;
+    min-height:150px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .skill-cell .sk-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--red);
+  }
+  .skill-cell .sk-name{
+    font-family:'Anton', sans-serif;
+    font-size:19px;
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    color:var(--white);
+    margin-top:auto;
+  }
+
+  /* ---------- education / experience (paper) ---------- */
+  .path{ padding:110px 0 120px; }
+  .path-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--paper-line);
+    border:1px solid var(--paper-line);
+  }
+  @media(max-width:800px){ .path-grid{ grid-template-columns:1fr; } }
+  .path-card{
+    background:var(--paper);
+    padding:40px 36px;
+  }
+  .path-card .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:14px;
+  }
+  .path-card h3{
+    font-size:26px;
+    color:var(--ink);
+    text-transform:none;
+    font-family:'Anton', sans-serif;
+    line-height:1.15;
+    margin-bottom:6px;
+  }
+  .path-card .org{
+    font-size:14.5px;
+    color:#5a564d;
+    margin-bottom:18px;
+  }
+  .path-card p{
+    font-size:15px;
+    color:#3a372f;
+    max-width:42ch;
+    margin-bottom:8px;
+  }
+  .path-card .period{
+    display:inline-block;
+    margin-top:12px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--ink);
+    border-bottom:2px solid var(--red);
+    padding-bottom:3px;
+  }
+
+  /* ---------- contact ---------- */
+  .contact{
+    padding:130px 0 90px;
+    position:relative;
+    background:
+      radial-gradient(ellipse 800px 400px at 20% 100%, rgba(214,34,27,0.14), transparent 60%),
+      var(--ink);
+  }
+  .contact h2{
+    font-size:clamp(46px,8vw,104px);
+    color:var(--white);
+    max-width:14ch;
+  }
+  .contact h2 span{ color:var(--red); }
+  .contact-sub{
+    margin-top:22px;
+    color:#c7c2b8;
+    max-width:48ch;
+    font-size:16.5px;
+  }
+  .ticket{
+    margin-top:56px;
+    border:1px solid #333;
+    display:grid;
+    grid-template-columns:1fr auto;
+    max-width:640px;
+  }
+  @media(max-width:600px){ .ticket{ grid-template-columns:1fr; } }
+  .ticket-main{ padding:30px 32px; }
+  .ticket-row{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px dashed #333;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13.5px;
+  }
+  .ticket-row:last-child{ border-bottom:none; }
+  .ticket-row .k{ color:var(--dim); letter-spacing:0.05em; }
+  .ticket-row .v{ color:var(--white); }
+  .ticket-stub{
+    background:var(--red);
+    padding:26px 24px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    align-items:center;
+    border-left:1px dashed rgba(255,255,255,0.4);
+  }
+  @media(max-width:600px){ .ticket-stub{ border-left:none; border-top:1px dashed rgba(255,255,255,0.4); flex-direction:row; } }
+  .ticket-stub .stub-barcode{
+    width:20px;
+    height:120px;
+    background:repeating-linear-gradient(90deg, var(--white) 0px, var(--white) 1px, transparent 1px, transparent 3px, var(--white) 3px, var(--white) 4px, transparent 4px, transparent 6px);
+  }
+  .ticket-stub .stub-label{
+    writing-mode:vertical-rl;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.2em;
+    color:var(--white);
+    margin-top:14px;
+  }
+
+  footer{
+    padding:40px 0 50px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--dim);
+    letter-spacing:0.04em;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="rail" aria-hidden="true">
+    <div class="rail-mark">RITURAJ&nbsp;GIRI</div>
+    <div class="rail-barcode"></div>
+    <div class="rail-serial">NP · KTM · 2026</div>
+  </div>
+
+  <header class="nav">
+    <div class="mark">RG</div>
+    <nav>
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="hero-eyebrow">GRAPHIC DESIGNER — Lalitpur, NEPAL</div>
+        <h1>RITURAJ<br><span>GIRI</span></h1>
+        <p class="hero-role">Poster design, branding &amp; AI-assisted visual work. Currently studying at Patan College for Professional Studies.</p>
+        <p class="hero-desc">I make bold, cut-up visuals for events, places and brands — usually starting from a hackathon brief or one I set myself. Strong type, hard edges, a barcode in the corner.</p>
+        <div class="hero-cta">
+          <a href="#work" class="btn primary">See the work</a>
+          <a href="#contact" class="btn ghost">Get in touch</a>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <div class="photo-frame">
+          <div class="photo-barcode"></div>
+          <img src="./images/profile.png>" alt="Rituraj Giri portrait">
+          <div class="photo-tag">GRAPHIC<br>DESIGNER</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-cue"><span class="line"></span> SCROLL</div>
+  </section>
+
+  <section class="paper" id="about">
+    <div class="wrap about">
+      <div class="section-tag">
+        <span class="num">01 / ABOUT</span>
+        <span class="rule"></span>
+      </div>
+      <div class="about-grid">
+        <p class="about-lead">Design student turning briefs into posters, mockups &amp; brand ideas — with type, texture and a growing AI-assisted workflow.</p>
+        <div class="about-body">
+          <p>I'm a graphic design student at Patan College for Professional Studies, building a practice around branding, poster design and digital illustration. Most of what I make starts as a hackathon brief or a personal one I set myself — event posters, place-branding, product mockups.</p>
+          <p>I'm also folding AI-assisted workflows into how I design, using them to move faster from concept to a finished, print-ready poster without losing the hand-built, collage feel I like working in.</p>
+          <div class="facts">
+            <div class="fact"><div class="k">Based in</div><div class="v">Lalitpur, Nepal</div></div>
+            <div class="fact"><div class="k">Studying at</div><div class="v">Patan College for Professional Studies</div></div>
+            <div class="fact"><div class="k">Focus</div><div class="v">Poster &amp; brand design</div></div>
+            <div class="fact"><div class="k">Available for</div><div class="v">Freelance &amp; team projects</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="work" id="work">
+    <div class="wrap">
+      <div class="section-tag">
+        <span class="num">02 / SELECTED WORK</span>
+        <span class="rule"></span>
+      </div>
+      <p class="work-intro">Six posters from recent briefs — event promos, place-branding and a couple of self-directed pieces. Each one carries the same signature: a serial code and a barcode, like a ticket stub.</p>
+
+      <div class="work-list">
+
+        <div class="piece">
+          <div class="piece-media">
+            <span class="piece-serial">No. 01 — GAMING</span>
+            <img src=".\images\nintendo.png" alt="Escape Into The World Of Gaming With Nintendo poster">
+          </div>
+          <div>
+            <div class="piece-index">01</div>
+            <h3>Escape Into<br>Gaming</h3>
+            <p>An event flyer for a Nintendo Switch gaming night — a tilted, bedroom-console composition built to feel like you're falling straight into the screen.</p>
+            <div class="piece-tags"><span>Event poster</span><span>Photo collage</span><span>Product tie-in</span></div>
+          </div>
+        </div>
+
+        <div class="piece rev">
+          <div class="piece-media">
+            <span class="piece-serial">No. 02 — NEPAL</span>
+            <img src="./images/nepal.png" alt="Nepal travel poster with Himalaya imagery cut into the letterforms">
+          </div>
+          <div>
+            <div class="piece-index">02</div>
+            <h3>Nepal</h3>
+            <p>A travel piece with the Himalaya cut directly into the letterforms of the headline, so the country's own landscape does the talking.</p>
+            <div class="piece-tags"><span>Travel</span><span>Type-as-image</span><span>Self-directed</span></div>
+          </div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-media">
+            <span class="piece-serial">No. 03 — TAEKWONDO</span>
+            <img src="./images/TAEKWONDO.png" alt="Taekwondo poster with a kick bursting out of a phone screen">
+          </div>
+          <div>
+            <div class="piece-index">03</div>
+            <h3>Taekwondo</h3>
+            <p>A high-impact promo built around a kick breaking out of a phone screen — splatter texture and hard red-on-black contrast for maximum energy.</p>
+            <div class="piece-tags"><span>Sports promo</span><span>High contrast</span><span>Motion</span></div>
+          </div>
+        </div>
+
+        <div class="piece rev">
+          <div class="piece-media">
+            <span class="piece-serial">No. 04 — TRIP</span>
+            <img src="./images/trip.png" alt="Trip poster for a Dusit Thani Himalayan Resort visit, textured like an old print">
+          </div>
+          <div>
+            <div class="piece-index">04</div>
+            <h3>Trip</h3>
+            <p>A print-textured announcement for a college visit to Dusit Thani Himalayan Resort, Dulikhel — grain and torn paper standing in for a physical keepsake.</p>
+            <div class="piece-tags"><span>Institutional</span><span>Print texture</span><span>PCPS</span></div>
+          </div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-media">
+            <span class="piece-serial">No. 05 — DHARAHARA</span>
+            <img src="./images/Dharahara.png" alt="Dharahara tower landmark poster with a torn paper reveal">
+          </div>
+          <div>
+            <div class="piece-index">05</div>
+            <h3>Dharahara</h3>
+            <p>A landmark study of Kathmandu's Dharahara tower — a torn-paper edge splits worn texture from a clean dusk photograph beneath it.</p>
+            <div class="piece-tags"><span>Landmark</span><span>Torn-paper</span><span>Self-directed</span></div>
+          </div>
+        </div>
+
+        <div class="piece rev">
+          <div class="piece-media">
+            <span class="piece-serial">No. 06 — SAINIK</span>
+            <img src="./images/.png" alt="Sainik Awasiya Mahavidyalaya institutional poster">
+          </div>
+          <div>
+            <div class="piece-index">06</div>
+            <h3>Sainik</h3>
+            <p>An institutional piece for Sainik Awasiya Mahavidyalaya, Bhaktapur — restrained black and white, letting four decades of the school's own history carry the design.</p>
+            <div class="piece-tags"><span>Institutional</span><span>Editorial</span><span>Black &amp; white</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="skills">
+    <div class="wrap">
+      <div class="section-tag">
+        <span class="num">03 / SKILLS</span>
+        <span class="rule"></span>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-cell"><span class="sk-num">01</span><span class="sk-name">Graphic Design</span></div>
+        <div class="skill-cell"><span class="sk-num">02</span><span class="sk-name">Digital Illustration</span></div>
+        <div class="skill-cell"><span class="sk-num">03</span><span class="sk-name">Creative Branding</span></div>
+        <div class="skill-cell"><span class="sk-num">04</span><span class="sk-name">Use of AI</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="paper path">
+    <div class="wrap">
+      <div class="section-tag">
+        <span class="num">04 / EDUCATION &amp; EXPERIENCE</span>
+        <span class="rule"></span>
+      </div>
+      <div class="path-grid">
+        <div class="path-card">
+          <div class="tag">Education</div>
+          <h3>Patan College for<br>Professional Studies</h3>
+          <div class="org">Undergraduate studies</div>
+          <p>Started in September 2026, expected to complete in 2029.</p>
+          <span class="period">2026 — Ongoing</span>
+        </div>
+        <div class="path-card">
+          <div class="tag">Experience</div>
+          <h3>Graphic Designer</h3>
+          <div class="org">Self-projects &amp; team hackathons</div>
+          <p>Designed visuals as part of team projects built during hackathons, from concept through to finished poster.</p>
+          <span class="period">2025 — 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <div class="section-tag">
+        <span class="num">05 / CONTACT</span>
+        <span class="rule"></span>
+      </div>
+      <h2>Let's make<br>your next <span>poster</span>.</h2>
+      <p class="contact-sub">Open to freelance briefs, hackathon teams and collaborations — event posters, brand work, place-branding, product mockups.</p>
+
+      <div class="ticket">
+        <div class="ticket-main">
+          <div class="ticket-row"><span class="k">NAME</span><span class="v">Rituraj Giri</span></div>
+          <div class="ticket-row"><span class="k">PHONE</span><span class="v">+977 9821337452</span></div>
+          <div class="ticket-row"><span class="k">EMAIL</span><span class="v">riturajgiri854@gmai.com</span></div>
+          <div class="ticket-row"><span class="k">PORTFOLIO</span><span class="v">abcdefg.com</span></div>
+          <div class="ticket-row"><span class="k">LOCATION</span><span class="v">Lalitpur, Nepal</span></div>
+        </div>
+        <div class="ticket-stub">
+          <div class="stub-barcode"></div>
+          <div class="stub-label">ADMIT ONE</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wrap">
+    <span>© 2026 Rituraj Giri</span>
+    <span>Graphic Designer — Lalitpur, Nepal</span>
+  </footer>
+
+</body>
+</html>
