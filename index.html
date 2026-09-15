@@ -4,15 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rituraj Giri — Graphic Designer</title>
+<meta name="description" content="Rituraj Giri is a graphic designer in Lalitpur, Nepal, making poster design, branding and AI-assisted visual work — event posters, place-branding and product mockups.">
+<meta name="theme-color" content="#0d0d0d">
+<meta property="og:title" content="Rituraj Giri — Graphic Designer">
+<meta property="og:description" content="Poster design, branding &amp; AI-assisted visual work from Lalitpur, Nepal.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d0d0d'/%3E%3Crect x='7' y='8' width='3' height='16' fill='%23f5f3ee'/%3E%3Crect x='12' y='8' width='2' height='16' fill='%23d6221b'/%3E%3Crect x='16' y='8' width='4' height='16' fill='%23f5f3ee'/%3E%3Crect x='22' y='8' width='3' height='16' fill='%23d6221b'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
   :root{
     --ink:#0d0d0d;
     --paper:#efe9df;
     --paper-line:#d8d0bf;
     --red:#d6221b;
+    --yellow:#f3c742;
     --gold:#a68a3f;
     --steel:#4a4f57;
     --white:#f5f3ee;
@@ -30,6 +40,101 @@
   }
   ::selection{ background:var(--red); color:var(--white); }
 
+  .cursor-orb{
+    position:fixed;
+    top:0;
+    left:0;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:var(--yellow);
+    pointer-events:none;
+    z-index:10000;
+    opacity:0;
+    transform:translate(-50%, -50%) scale(1);
+    border:2px solid var(--ink);
+    box-shadow:0 0 0 2px rgba(243,199,66,0.35);
+    transition:width .2s ease, height .2s ease, opacity .2s ease, background-color .2s ease;
+  }
+  .cursor-orb.is-active{
+    width:42px;
+    height:42px;
+    background:var(--yellow);
+    border-color:var(--red);
+    box-shadow:0 0 0 2px rgba(243,199,66,0.4);
+  }
+  body.cursor-ready,
+  body.cursor-ready a,
+  body.cursor-ready button{ cursor:none; }
+  @media(max-width:800px), (pointer:coarse){ .cursor-orb{ display:none; } }
+  .scroll-progress{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:3px;
+    z-index:80;
+    pointer-events:none;
+  }
+  .scroll-progress span{
+    display:block;
+    width:0;
+    height:100%;
+    background:var(--yellow);
+    transform-origin:left center;
+  }
+
+  /* ---------- loading screen ---------- */
+  .loading-screen{
+    position:fixed;
+    inset:0;
+    background:var(--paper);
+    color:var(--ink);
+    pointer-events:none;
+    overflow:hidden;
+    z-index:9999;
+  }
+  .counter{
+    position:fixed;
+    left:clamp(20px, 11vw, 150px);
+    bottom:clamp(40px, 11vw, 150px);
+    display:flex;
+    height:100px;
+    font-size:100px;
+    line-height:102px;
+    clip-path:polygon(0 0, 100% 0, 100% 100px, 0 100px);
+    font-weight:400;
+    font-family:'Anton', sans-serif;
+    overflow:hidden;
+  }
+  .counter-1,
+  .counter-2,
+  .counter-3,
+  .counter-4{ position:relative; top:-15px; }
+  .num1offset1{ position:relative; right:-15px; }
+  .num1offset2{ position:relative; }
+  .loader{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:100%;
+    height:10px;
+    transform:translate(-50%, -50%);
+    display:flex;
+    background:var(--ink);
+  }
+  .loader-1{
+    position:relative;
+    background:var(--red);
+    width:100%;
+    overflow:hidden;
+  }
+  .bar{ height:10px; }
+  @media(max-width:600px){
+    .counter{ font-size:72px; line-height:74px; height:74px; clip-path:polygon(0 0, 100% 0, 100% 74px, 0 74px); }
+    .loader, .bar{ height:8px; }
+  }
+ 
   h1,h2,h3,.display{
     font-family:'Anton', sans-serif;
     font-weight:400;
@@ -37,9 +142,28 @@
     line-height:0.92;
     text-transform:uppercase;
   }
-
+ 
   a{ color:inherit; text-decoration:none; }
-
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--red);
+    outline-offset:3px;
+  }
+ 
+  .skip-link{
+    position:fixed;
+    top:-60px; left:16px;
+    z-index:200;
+    background:var(--red);
+    color:var(--white);
+    padding:10px 16px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    transition:top .2s ease;
+  }
+  .skip-link:focus{ top:16px; }
+ 
   .wrap{
     max-width:1180px;
     margin:0 auto;
@@ -52,7 +176,7 @@
   @media(max-width:600px){
     .wrap{ padding-left:20px; padding-right:20px; }
   }
-
+ 
   /* ---------- barcode rail ---------- */
   .rail{
     position:fixed;
@@ -65,15 +189,16 @@
     padding:28px 0;
     z-index:50;
     background:linear-gradient(180deg, rgba(13,13,13,0.0), rgba(13,13,13,0.0));
+    mix-blend-mode:difference;
     pointer-events:none;
   }
-  @media(max-width:600px){ .rail{ width:0; } }
+  @media(max-width:600px){ .rail{ width:0; opacity:0; visibility:hidden; } }
   .rail-mark{
     writing-mode:vertical-rl;
     font-family:'JetBrains Mono', monospace;
     font-size:11px;
     letter-spacing:0.28em;
-    color:var(--dim);
+    color:var(--white);
     pointer-events:auto;
   }
   .rail-barcode{
@@ -87,9 +212,17 @@
     font-family:'JetBrains Mono', monospace;
     font-size:10px;
     letter-spacing:0.15em;
-    color:var(--dim);
+    color:var(--white);
   }
-
+  .rail-clock{
+    writing-mode:vertical-rl;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.12em;
+    color:var(--white);
+    font-variant-numeric:tabular-nums;
+  }
+ 
   /* ---------- top nav ---------- */
   header.nav{
     position:fixed;
@@ -116,9 +249,12 @@
     letter-spacing:0.1em;
     color:var(--white);
     text-transform:uppercase;
+    padding-bottom:2px;
+    border-bottom:1px solid transparent;
   }
+  header.nav nav a.active{ border-bottom-color:currentColor; }
   @media(max-width:600px){ header.nav nav{ gap:16px; } header.nav nav a{ font-size:10px; } }
-
+ 
   /* ---------- hero ---------- */
   .hero{
     min-height:100svh;
@@ -139,7 +275,21 @@
     width:100%;
   }
   @media(max-width:900px){ .hero-grid{ grid-template-columns:1fr; } }
-
+ 
+  @keyframes riseIn{
+    from{ opacity:0; transform:translateY(16px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .hero-eyebrow, .hero h1, .hero-role, .hero-desc, .hero-cta, .hero-photo{
+    animation:riseIn .7s cubic-bezier(.2,.7,.3,1) both;
+  }
+  .hero-eyebrow{ animation-delay:.05s; }
+  .hero h1{ animation-delay:.15s; }
+  .hero-role{ animation-delay:.32s; }
+  .hero-desc{ animation-delay:.42s; }
+  .hero-cta{ animation-delay:.52s; }
+  .hero-photo{ animation-delay:.3s; }
+ 
   .hero-eyebrow{
     font-family:'JetBrains Mono', monospace;
     font-size:12px;
@@ -182,11 +332,12 @@
     letter-spacing:0.1em;
     text-transform:uppercase;
     border:1px solid var(--white);
+    transition:background .18s ease, color .18s ease, border-color .18s ease;
   }
   .btn.primary{ background:var(--red); border-color:var(--red); color:var(--white); }
   .btn.primary:hover{ background:#b81c15; }
   .btn.ghost:hover{ background:var(--white); color:var(--ink); }
-
+ 
   .hero-photo{
     position:relative;
     display:flex;
@@ -203,6 +354,9 @@
     display:block;
     filter:grayscale(0.15) contrast(1.05);
     border:2px solid var(--white);
+    background:#1a1a1a;
+    aspect-ratio:4/5;
+    object-fit:cover;
   }
   .photo-tag{
     position:absolute;
@@ -226,7 +380,7 @@
     background-color:var(--white);
     transform:rotate(-4deg);
   }
-
+ 
   .scroll-cue{
     position:absolute;
     bottom:32px;
@@ -238,11 +392,40 @@
     display:flex;
     align-items:center;
     gap:10px;
+    animation:riseIn .7s cubic-bezier(.2,.7,.3,1) .7s both;
   }
   @media(max-width:900px){ .scroll-cue{ left:56px; } }
   @media(max-width:600px){ .scroll-cue{ left:20px; bottom:20px; } }
   .scroll-cue .line{ width:34px; height:1px; background:var(--dim); }
-
+ 
+  /* ---------- ticker strip ---------- */
+  .ticker{
+    background:var(--ink);
+    border-top:1px dashed #333;
+    border-bottom:1px dashed #333;
+    overflow:hidden;
+    padding:16px 0;
+  }
+  .ticker-track{
+    display:flex;
+    width:max-content;
+    animation:tickerScroll 32s linear infinite;
+  }
+  .ticker-track span{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--dim);
+    padding:0 20px;
+    white-space:nowrap;
+  }
+  .ticker-track span.dot{ color:var(--red); padding:0 20px; }
+  @keyframes tickerScroll{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
+ 
   /* ---------- section label (poster serial) ---------- */
   .section-tag{
     display:flex;
@@ -258,7 +441,7 @@
   }
   .section-tag .rule{ flex:1; height:1px; background:currentColor; opacity:0.25; }
   .section-tag h2{ font-size:clamp(30px,4vw,46px); }
-
+ 
   /* ---------- about (paper section) ---------- */
   .paper{
     background:var(--paper);
@@ -287,7 +470,7 @@
     margin-bottom:18px;
   }
   .about-body p:last-child{ margin-bottom:0; }
-
+ 
   .facts{
     margin-top:44px;
     display:grid;
@@ -310,7 +493,7 @@
     margin-bottom:6px;
   }
   .fact .v{ font-size:15.5px; color:var(--ink); font-weight:600; }
-
+ 
   /* ---------- work ---------- */
   .work{ padding:120px 0 60px; }
   .work-intro{ max-width:56ch; color:#cfcac0; margin-bottom:64px; font-size:16.5px; }
@@ -320,7 +503,11 @@
     grid-template-columns:0.85fr 1.15fr;
     gap:52px;
     align-items:center;
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .6s ease, transform .6s ease;
   }
+  .piece.in-view{ opacity:1; transform:translateY(0); }
   .piece.rev{ direction:rtl; }
   .piece.rev > *{ direction:ltr; }
   @media(max-width:800px){
@@ -328,12 +515,19 @@
   }
   .piece-media{
     position:relative;
+    overflow:hidden;
   }
   .piece-media img{
     width:100%;
     display:block;
     border:1px solid #2a2a2a;
+    background:#161616;
+    aspect-ratio:4/3;
+    object-fit:cover;
+    transform:scale(.94);
+    transition:transform .5s ease;
   }
+  .piece:hover .piece-media img{ transform:scale(1); }
   .piece-serial{
     position:absolute;
     top:14px;
@@ -374,7 +568,7 @@
     border:1px solid #333;
     padding:6px 10px;
   }
-
+ 
   /* ---------- skills ---------- */
   .skills{ padding:120px 0; }
   .skills-grid{
@@ -389,7 +583,7 @@
     border-right:1px solid #2a2a2a;
     border-bottom:1px solid #2a2a2a;
     padding:34px 22px;
-    min-height:150px;
+    min-height:170px;
     display:flex;
     flex-direction:column;
     justify-content:space-between;
@@ -407,7 +601,14 @@
     color:var(--white);
     margin-top:auto;
   }
-
+  .skill-cell .sk-desc{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--dim);
+    margin-top:8px;
+    line-height:1.5;
+  }
+ 
   /* ---------- education / experience (paper) ---------- */
   .path{ padding:110px 0 120px; }
   .path-grid{
@@ -458,7 +659,7 @@
     border-bottom:2px solid var(--red);
     padding-bottom:3px;
   }
-
+ 
   /* ---------- contact ---------- */
   .contact{
     padding:130px 0 90px;
@@ -491,14 +692,16 @@
   .ticket-row{
     display:flex;
     justify-content:space-between;
+    gap:16px;
     padding:12px 0;
     border-bottom:1px dashed #333;
     font-family:'JetBrains Mono', monospace;
     font-size:13.5px;
   }
   .ticket-row:last-child{ border-bottom:none; }
-  .ticket-row .k{ color:var(--dim); letter-spacing:0.05em; }
-  .ticket-row .v{ color:var(--white); }
+  .ticket-row .k{ color:var(--dim); letter-spacing:0.05em; flex-shrink:0; }
+  .ticket-row .v{ color:var(--white); text-align:right; word-break:break-word; }
+  .ticket-row .v a:hover{ color:var(--red); }
   .ticket-stub{
     background:var(--red);
     padding:26px 24px;
@@ -522,7 +725,7 @@
     color:var(--white);
     margin-top:14px;
   }
-
+ 
   footer{
     padding:40px 0 50px;
     display:flex;
@@ -535,30 +738,85 @@
     flex-wrap:wrap;
     gap:10px;
   }
-
+  footer .footer-clock{ font-variant-numeric:tabular-nums; }
+  footer .back-top:hover{ color:var(--white); }
+ 
   @media (prefers-reduced-motion: reduce){
     html{ scroll-behavior:auto; }
+    .hero-eyebrow, .hero h1, .hero-role, .hero-desc, .hero-cta, .hero-photo, .scroll-cue{
+      animation:none; opacity:1; transform:none;
+    }
+    .ticker-track{ animation:none; }
+    .piece{ opacity:1; transform:none; transition:none; }
+    .piece-media img{ transition:none; }
   }
 </style>
 </head>
 <body>
 
+  <div class="cursor-orb" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <div class="loading-screen" aria-hidden="true">
+    <div class="loader">
+      <div class="loader-1 bar"></div>
+      <div class="loader-2 bar"></div>
+    </div>
+    <div class="counter">
+      <div class="counter-1 digit">
+        <div class="num">0</div>
+        <div class="num num1offset1">1</div>
+      </div>
+      <div class="counter-2 digit">
+        <div class="num">0</div>
+        <div class="num num1offset2">1</div>
+        <div class="num">2</div>
+        <div class="num">3</div>
+        <div class="num">4</div>
+        <div class="num">5</div>
+        <div class="num">6</div>
+        <div class="num">7</div>
+        <div class="num">8</div>
+        <div class="num">9</div>
+        <div class="num">0</div>
+      </div>
+      <div class="counter-3 digit">
+        <div class="num">0</div>
+        <div class="num">1</div>
+        <div class="num">2</div>
+        <div class="num">3</div>
+        <div class="num">4</div>
+        <div class="num">5</div>
+        <div class="num">6</div>
+        <div class="num">7</div>
+        <div class="num">8</div>
+        <div class="num">9</div>
+      </div>
+      <div class="counter-4 digit">
+        <div class="num">%</div>
+      </div>
+    </div>
+  </div>
+ 
+  <a class="skip-link" href="#about">Skip to content</a>
+ 
   <div class="rail" aria-hidden="true">
     <div class="rail-mark">RITURAJ&nbsp;GIRI</div>
     <div class="rail-barcode"></div>
+    <div class="rail-clock" id="railClock">KTM 00:00:00</div>
     <div class="rail-serial">NP · KTM · 2026</div>
   </div>
-
+ 
   <header class="nav">
-    <div class="mark">RG</div>
-    <nav>
+    <a class="mark" href="#top">RG</a>
+    <nav id="siteNav">
       <a href="#work">Work</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
-
-  <section class="hero">
+ 
+  <section class="hero" id="top">
     <div class="wrap hero-grid">
       <div>
         <div class="hero-eyebrow">GRAPHIC DESIGNER — Lalitpur, NEPAL</div>
@@ -573,14 +831,29 @@
       <div class="hero-photo">
         <div class="photo-frame">
           <div class="photo-barcode"></div>
-          <img src="./images/profile.jpeg"> alt="Rituraj Giri portrait">
+          <img src="./images/profile.jpeg" alt="Rituraj Giri portrait">
           <div class="photo-tag">GRAPHIC<br>DESIGNER</div>
         </div>
       </div>
     </div>
     <div class="scroll-cue"><span class="line"></span> SCROLL</div>
   </section>
-
+ 
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>POSTER DESIGN</span><span class="dot">✦</span>
+      <span>BRANDING</span><span class="dot">✦</span>
+      <span>DIGITAL ILLUSTRATION</span><span class="dot">✦</span>
+      <span>AI-ASSISTED WORKFLOW</span><span class="dot">✦</span>
+      <span>PRINT-READY FILES</span><span class="dot">✦</span>
+      <span>POSTER DESIGN</span><span class="dot">✦</span>
+      <span>BRANDING</span><span class="dot">✦</span>
+      <span>DIGITAL ILLUSTRATION</span><span class="dot">✦</span>
+      <span>AI-ASSISTED WORKFLOW</span><span class="dot">✦</span>
+      <span>PRINT-READY FILES</span><span class="dot">✦</span>
+    </div>
+  </div>
+ 
   <section class="paper" id="about">
     <div class="wrap about">
       <div class="section-tag">
@@ -602,21 +875,21 @@
       </div>
     </div>
   </section>
-
+ 
   <section class="work" id="work">
     <div class="wrap">
       <div class="section-tag">
         <span class="num">02 / SELECTED WORK</span>
         <span class="rule"></span>
       </div>
-      <p class="work-intro">Six posters from recent briefs — event promos, place-branding and a couple of self-directed pieces. Each one carries the same signature: a serial code and a barcode, like a ticket stub.</p>
-
+      <p class="work-intro">Eight projects across event promotion, place-branding, editorial design and identity systems. Each one carries the same signature: a serial code and a barcode, like a ticket stub.</p>
+ 
       <div class="work-list">
-
+ 
         <div class="piece">
           <div class="piece-media">
             <span class="piece-serial">No. 01 — GAMING</span>
-            <img src=".\images\nintendo.png" alt="Escape Into The World Of Gaming With Nintendo poster">
+            <img src=".\images\nintendo.png" alt="Escape Into The World Of Gaming With Nintendo poster" loading="lazy">
           </div>
           <div>
             <div class="piece-index">01</div>
@@ -625,11 +898,11 @@
             <div class="piece-tags"><span>Event poster</span><span>Photo collage</span><span>Product tie-in</span></div>
           </div>
         </div>
-
+ 
         <div class="piece rev">
           <div class="piece-media">
             <span class="piece-serial">No. 02 — NEPAL</span>
-            <img src="./images/nepal.png" alt="Nepal travel poster with Himalaya imagery cut into the letterforms">
+            <img src="./images/nepal.png" alt="Nepal travel poster with Himalaya imagery cut into the letterforms" loading="lazy">
           </div>
           <div>
             <div class="piece-index">02</div>
@@ -638,11 +911,11 @@
             <div class="piece-tags"><span>Travel</span><span>Type-as-image</span><span>Self-directed</span></div>
           </div>
         </div>
-
+ 
         <div class="piece">
           <div class="piece-media">
             <span class="piece-serial">No. 03 — TAEKWONDO</span>
-            <img src="./images/TAEKWONDO.png" alt="Taekwondo poster with a kick bursting out of a phone screen">
+            <img src="./images/TAEKWONDO.png" alt="Taekwondo poster with a kick bursting out of a phone screen" loading="lazy">
           </div>
           <div>
             <div class="piece-index">03</div>
@@ -651,11 +924,11 @@
             <div class="piece-tags"><span>Sports promo</span><span>High contrast</span><span>Motion</span></div>
           </div>
         </div>
-
+ 
         <div class="piece rev">
           <div class="piece-media">
             <span class="piece-serial">No. 04 — TRIP</span>
-            <img src="./images/trip.png" alt="Trip poster for a Dusit Thani Himalayan Resort visit, textured like an old print">
+            <img src="./images/trip.png" alt="Trip poster for a Dusit Thani Himalayan Resort visit, textured like an old print" loading="lazy">
           </div>
           <div>
             <div class="piece-index">04</div>
@@ -664,11 +937,11 @@
             <div class="piece-tags"><span>Institutional</span><span>Print texture</span><span>PCPS</span></div>
           </div>
         </div>
-
+ 
         <div class="piece">
           <div class="piece-media">
             <span class="piece-serial">No. 05 — DHARAHARA</span>
-            <img src="./images/Dharahara.png" alt="Dharahara tower landmark poster with a torn paper reveal">
+            <img src="./images/Dharahara.png" alt="Dharahara tower landmark poster with a torn paper reveal" loading="lazy">
           </div>
           <div>
             <div class="piece-index">05</div>
@@ -677,11 +950,11 @@
             <div class="piece-tags"><span>Landmark</span><span>Torn-paper</span><span>Self-directed</span></div>
           </div>
         </div>
-
+ 
         <div class="piece rev">
           <div class="piece-media">
             <span class="piece-serial">No. 06 — SAINIK</span>
-            <img src="./images/sainik.png" alt="Sainik Awasiya Mahavidyalaya institutional poster">
+            <img src="./images/sainik.png" alt="Sainik Awasiya Mahavidyalaya institutional poster" loading="lazy">
           </div>
           <div>
             <div class="piece-index">06</div>
@@ -691,10 +964,36 @@
           </div>
         </div>
 
+        <div class="piece">
+          <div class="piece-media">
+            <span class="piece-serial">No. 07 — KATHMANDU AFTER DARK</span>
+            <img src="./images/1.png" alt="Placeholder poster for a Kathmandu After Dark cultural event identity" loading="lazy" onerror="this.onerror=null; this.src='./images/nepal.png';">
+          </div>
+          <div>
+            <div class="piece-index">07</div>
+            <h3>Kathmandu<br>After Dark</h3>
+            <p>A cultural event identity for an evening of live music, food and moving image in Kathmandu. The system would combine a bold condensed wordmark, a yellow-red night palette and a flexible poster kit for artists, venues and social formats.</p>
+            <div class="piece-tags"><span>Event identity</span><span>Campaign system</span><span>Social rollout</span></div>
+          </div>
+        </div>
+
+        <div class="piece rev">
+          <div class="piece-media">
+            <span class="piece-serial">No. 08 — FIELD NOTES</span>
+            <img src="./images/2.png" alt="Placeholder editorial cover for a Himalayan Field Notes travel project" loading="lazy" onerror="this.onerror=null; this.src='./images/trip.png';">
+          </div>
+          <div>
+            <div class="piece-index">08</div>
+            <h3>Field<br>Notes</h3>
+            <p>An editorial travel series documenting Himalayan routes through maps, fragments of conversation and found textures. The project would show a cover, a two-page spread and a small wayfinding language working as one consistent visual world.</p>
+            <div class="piece-tags"><span>Editorial</span><span>Art direction</span><span>Wayfinding</span></div>
+          </div>
+        </div>
+ 
       </div>
     </div>
   </section>
-
+ 
   <section class="skills">
     <div class="wrap">
       <div class="section-tag">
@@ -702,14 +1001,38 @@
         <span class="rule"></span>
       </div>
       <div class="skills-grid">
-        <div class="skill-cell"><span class="sk-num">01</span><span class="sk-name">Graphic Design</span></div>
-        <div class="skill-cell"><span class="sk-num">02</span><span class="sk-name">Digital Illustration</span></div>
-        <div class="skill-cell"><span class="sk-num">03</span><span class="sk-name">Creative Branding</span></div>
-        <div class="skill-cell"><span class="sk-num">04</span><span class="sk-name">Use of AI</span></div>
+        <div class="skill-cell">
+          <span class="sk-num">01</span>
+          <div>
+            <span class="sk-name">Graphic Design</span>
+            <p class="sk-desc">Posters, layouts &amp; print-ready files</p>
+          </div>
+        </div>
+        <div class="skill-cell">
+          <span class="sk-num">02</span>
+          <div>
+            <span class="sk-name">Digital Illustration</span>
+            <p class="sk-desc">Type-as-image &amp; photo collage</p>
+          </div>
+        </div>
+        <div class="skill-cell">
+          <span class="sk-num">03</span>
+          <div>
+            <span class="sk-name">Creative Branding</span>
+            <p class="sk-desc">Place &amp; institutional identity</p>
+          </div>
+        </div>
+        <div class="skill-cell">
+          <span class="sk-num">04</span>
+          <div>
+            <span class="sk-name">Use of AI</span>
+            <p class="sk-desc">Concept to print-ready, faster</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
-
+ 
   <section class="paper path">
     <div class="wrap">
       <div class="section-tag">
@@ -734,7 +1057,7 @@
       </div>
     </div>
   </section>
-
+ 
   <section class="contact" id="contact">
     <div class="wrap">
       <div class="section-tag">
@@ -743,13 +1066,13 @@
       </div>
       <h2>Let's make<br>your next <span>poster</span>.</h2>
       <p class="contact-sub">Open to freelance briefs, hackathon teams and collaborations — event posters, brand work, place-branding, product mockups.</p>
-
+ 
       <div class="ticket">
         <div class="ticket-main">
           <div class="ticket-row"><span class="k">NAME</span><span class="v">Rituraj Giri</span></div>
-          <div class="ticket-row"><span class="k">PHONE</span><span class="v">+977 9821337452</span></div>
-          <div class="ticket-row"><span class="k">EMAIL</span><span class="v">riturajgiri854@gmai.com</span></div>
-          <div class="ticket-row"><span class="k">PORTFOLIO</span><span class="v">https://rituraj-giri.github.io/portfolio_deployment/</span></div>
+          <div class="ticket-row"><span class="k">PHONE</span><span class="v"><a href="tel:+9779821337452">+977 9821337452</a></span></div>
+          <div class="ticket-row"><span class="k">EMAIL</span><span class="v"><a href="mailto:riturajgiri854@gmail.com">riturajgiri854@gmail.com</a></span></div>
+          <div class="ticket-row"><span class="k">PORTFOLIO</span><span class="v"><a href="https://rituraj-giri.github.io/portfolio_deployment/" target="_blank" rel="noopener">rituraj-giri.github.io</a></span></div>
           <div class="ticket-row"><span class="k">LOCATION</span><span class="v">Lalitpur, Nepal</span></div>
         </div>
         <div class="ticket-stub">
@@ -759,11 +1082,180 @@
       </div>
     </div>
   </section>
-
+ 
   <footer class="wrap">
     <span>© 2026 Rituraj Giri</span>
-    <span>Graphic Designer — Lalitpur, Nepal</span>
+    <span class="footer-clock" id="footerClock">Lalitpur, Nepal · 00:00:00 NPT</span>
+    <a class="back-top" href="#top">Back to top ↑</a>
   </footer>
 
+  <script>
+    (function(){
+      var loadingScreen = document.querySelector('.loading-screen');
+      var counter3 = document.querySelector('.counter-3');
+
+      if(!loadingScreen || !window.gsap){
+        if(loadingScreen) loadingScreen.remove();
+        return;
+      }
+
+      for(var cycle = 0; cycle < 2; cycle++){
+        for(var digit = 0; digit < 10; digit++){
+          var number = document.createElement('div');
+          number.className = 'num';
+          number.textContent = digit;
+          counter3.appendChild(number);
+        }
+      }
+      var finalNumber = document.createElement('div');
+      finalNumber.className = 'num';
+      finalNumber.textContent = '0';
+      counter3.appendChild(finalNumber);
+
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        loadingScreen.remove();
+        return;
+      }
+
+      function animateCounter(selector, duration, delay){
+        var counter = document.querySelector(selector);
+        var numberHeight = counter.querySelector('.num').clientHeight;
+        var totalDistance = (counter.querySelectorAll('.num').length - 1) * numberHeight;
+        gsap.to(counter, {
+          y:-totalDistance,
+          duration:duration,
+          delay:delay || 0,
+          ease:'power2.inOut'
+        });
+      }
+
+      animateCounter('.counter-3', 5);
+      animateCounter('.counter-4', 2);
+      animateCounter('.counter-2', 6);
+      animateCounter('.counter-1', 2, 4);
+
+      gsap.from('.loader-1', {
+        width:0,
+        duration:6,
+        ease:'power2.inOut'
+      });
+      gsap.to('.digit', {
+        top:'-150px',
+        stagger:{ amount:0.25 },
+        delay:6,
+        duration:1,
+        ease:'power4.inOut'
+      });
+      gsap.to('.loader', {
+        background:'none',
+        delay:6,
+        duration:0.1
+      });
+      gsap.to('.loader-1', {
+        rotate:90,
+        duration:0.5,
+        delay:6
+      });
+      gsap.to('.loader', {
+        scale:500,
+        duration:1,
+        delay:7,
+        ease:'power2.inOut'
+      });
+      gsap.to('.loading-screen', {
+        opacity:0,
+        duration:0.5,
+        delay:7.5,
+        ease:'power1.inOut',
+        onComplete:function(){ loadingScreen.remove(); }
+      });
+      gsap.to('h1', {
+        y:-80,
+        duration:1.5,
+        delay:7,
+        ease:'power4.inOut',
+        stagger:{ amount:0.1 }
+      });
+    }());
+  </script>
+ 
+  <script>
+    // Live Kathmandu (NPT) clock — rail + footer
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function updateClocks(){
+      var parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone:'Asia/Kathmandu', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
+      }).formatToParts(new Date());
+      var h='00', m='00', s='00';
+      parts.forEach(function(p){
+        if(p.type==='hour') h=p.value;
+        if(p.type==='minute') m=p.value;
+        if(p.type==='second') s=p.value;
+      });
+      var stamp = h+':'+m+':'+s;
+      var rail = document.getElementById('railClock');
+      var foot = document.getElementById('footerClock');
+      if(rail) rail.textContent = 'KTM ' + stamp;
+      if(foot) foot.textContent = 'Lalitpur, Nepal · ' + stamp + ' NPT';
+    }
+    updateClocks();
+    setInterval(updateClocks, 1000);
+ 
+    // Scroll-spy active nav state
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll('#siteNav a'));
+    var sections = navLinks.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+    if('IntersectionObserver' in window && sections.length){
+      var spy = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          var link = navLinks.find(function(a){ return a.getAttribute('href') === '#' + entry.target.id; });
+          if(!link) return;
+          if(entry.isIntersecting) link.classList.add('active');
+          else link.classList.remove('active');
+        });
+      }, { rootMargin:'-45% 0px -45% 0px' });
+      sections.forEach(function(s){ spy.observe(s); });
+    }
+ 
+    // Reveal work pieces as they enter view
+    var pieces = document.querySelectorAll('.piece');
+    if('IntersectionObserver' in window && pieces.length){
+      var reveal = new IntersectionObserver(function(entries, obs){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            entry.target.classList.add('in-view');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold:0.2 });
+      pieces.forEach(function(p){ reveal.observe(p); });
+    } else {
+      pieces.forEach(function(p){ p.classList.add('in-view'); });
+    }
+
+    // Yellow cursor orb and scroll progress accent
+    var cursorOrb = document.querySelector('.cursor-orb');
+    var progressBar = document.querySelector('.scroll-progress span');
+    var hoverTargets = document.querySelectorAll('a, button, .piece-media, .photo-frame');
+    if(cursorOrb && window.matchMedia('(pointer:fine)').matches){
+      document.body.classList.add('cursor-ready');
+      document.addEventListener('pointermove', function(event){
+        cursorOrb.style.left = event.clientX + 'px';
+        cursorOrb.style.top = event.clientY + 'px';
+        cursorOrb.style.opacity = '1';
+      });
+      hoverTargets.forEach(function(target){
+        target.addEventListener('mouseenter', function(){ cursorOrb.classList.add('is-active'); });
+        target.addEventListener('mouseleave', function(){ cursorOrb.classList.remove('is-active'); });
+      });
+    }
+    function updateScrollProgress(){
+      if(!progressBar) return;
+      var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = (scrollable > 0 ? window.scrollY / scrollable * 100 : 0) + '%';
+    }
+    updateScrollProgress();
+    window.addEventListener('scroll', updateScrollProgress, { passive:true });
+  </script>
+ 
 </body>
 </html>
